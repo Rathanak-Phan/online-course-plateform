@@ -14,6 +14,14 @@ class CourseController extends Controller
         return view('admin.courses.index', compact('courses'));
     }
 
+    public function toggleStatus(Course $course)
+    {
+        $course->status = $course->status === 'published' ? 'draft' : 'published';
+        $course->save();
+
+        return back()->with('success', 'Course status updated successfully.');
+    }
+
     public function destroy(Course $course)
     {
         $course->delete();

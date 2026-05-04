@@ -27,5 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
         });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (\Illuminate\Http\Exceptions\PostTooLargeException $e, $request) {
+            return back()->with('error', 'The file you are trying to upload is too large. Please ensure it is under 10MB or check your server configuration.')->withInput();
+        });
     })->create();

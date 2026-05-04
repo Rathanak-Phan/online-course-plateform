@@ -26,7 +26,7 @@
                                 <img class="inline-block h-10 w-10 rounded-full ring-2 ring-white" src="https://i.pravatar.cc/100?img={{ $i+10 }}" alt="User">
                             @endfor
                         </div>
-                        <p class="text-sm text-slate-500 font-medium">Trusted by <span class="text-slate-900 font-bold">10k+</span> students worldwide</p>
+                        <p class="text-sm text-slate-500 font-medium">Trusted by <span class="text-slate-900 font-bold">{{ number_format($totalStudents + 1000) }}+</span> students worldwide</p>
                     </div>
                 </div>
                 
@@ -47,25 +47,18 @@
                     <h2 class="text-3xl font-extrabold text-slate-900 mb-4">Top Categories</h2>
                     <p class="text-slate-600">Explore our most popular subjects and start learning.</p>
                 </div>
-                <a href="#" class="text-indigo-600 font-bold hover:underline">View all categories &rarr;</a>
+                <a href="{{ route('courses.index') }}" class="text-indigo-600 font-bold hover:underline">View all categories &rarr;</a>
             </div>
             
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
                 @php
-                    $categories = [
-                        ['name' => 'Development', 'icon' => '💻', 'count' => '1.2k'],
-                        ['name' => 'Design', 'icon' => '🎨', 'count' => '850'],
-                        ['name' => 'Business', 'icon' => '📈', 'count' => '600'],
-                        ['name' => 'Marketing', 'icon' => '🚀', 'count' => '430'],
-                        ['name' => 'Music', 'icon' => '🎸', 'count' => '210'],
-                        ['name' => 'Photography', 'icon' => '📷', 'count' => '180'],
-                    ];
+                    $icons = ['Development' => '💻', 'Design' => '🎨', 'Business' => '📈', 'Marketing' => '🚀', 'Music' => '🎸', 'Photography' => '📷'];
                 @endphp
                 @foreach($categories as $cat)
-                    <a href="#" class="bg-white p-8 rounded-2xl border border-slate-200 text-center hover:border-indigo-500 hover:shadow-xl transition-all group">
-                        <span class="text-4xl mb-4 block group-hover:scale-110 transition-transform">{{ $cat['icon'] }}</span>
-                        <h4 class="font-bold text-slate-900 mb-1">{{ $cat['name'] }}</h4>
-                        <p class="text-xs text-slate-400 font-medium">{{ $cat['count'] }} Courses</p>
+                    <a href="{{ route('courses.index', ['category' => $cat->id]) }}" class="bg-white p-8 rounded-2xl border border-slate-200 text-center hover:border-indigo-500 hover:shadow-xl transition-all group">
+                        <span class="text-4xl mb-4 block group-hover:scale-110 transition-transform">{{ $icons[$cat->name] ?? '📚' }}</span>
+                        <h4 class="font-bold text-slate-900 mb-1">{{ $cat->name }}</h4>
+                        <p class="text-xs text-slate-400 font-medium">{{ $cat->courses_count }} Courses</p>
                     </a>
                 @endforeach
             </div>
@@ -81,30 +74,22 @@
             </div>
 
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                @php
-                    $featured = [
-                        ['id' => 1, 'title' => 'Full-Stack Web Development Bootcamp 2024', 'instructor' => 'Dr. Angela Yu', 'price' => 99.99, 'rating' => 4.9, 'reviews' => '12.4k', 'image' => 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=400&q=80', 'badge' => 'Best Seller'],
-                        ['id' => 2, 'title' => 'Advanced UI/UX Design Mastery', 'instructor' => 'Gary Simon', 'price' => 84.99, 'rating' => 4.8, 'reviews' => '8.2k', 'image' => 'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=400&q=80', 'badge' => 'New'],
-                        ['id' => 3, 'title' => 'Python for Data Science and AI', 'instructor' => 'Jose Portilla', 'price' => 74.99, 'rating' => 4.7, 'reviews' => '25k', 'image' => 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=400&q=80', 'badge' => null],
-                        ['id' => 4, 'title' => 'Digital Marketing Strategy 2024', 'instructor' => 'Seth Godin', 'price' => 89.99, 'rating' => 4.9, 'reviews' => '5.1k', 'image' => 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=400&q=80', 'badge' => 'Popular'],
-                    ];
-                @endphp
-                @foreach($featured as $course)
+                @foreach($featuredCourses as $course)
                     <x-course-card 
-                        :id="$course['id']"
-                        :title="$course['title']" 
-                        :instructor="$course['instructor']" 
-                        :price="$course['price']" 
-                        :rating="$course['rating']" 
-                        :reviews="$course['reviews']" 
-                        :image="$course['image']" 
-                        :badge="$course['badge']"
+                        :id="$course->id"
+                        :title="$course->title" 
+                        :instructor="$course->instructor->name" 
+                        :price="$course->price" 
+                        :rating="$course->reviews->avg('rating') ?? 5.0" 
+                        :reviews="$course->reviews->count()" 
+                        :image="$course->thumbnail ? asset('storage/' . $course->thumbnail) : 'https://placehold.co/400x225?text=' . urlencode($course->title)" 
+                        :badge="$course->enrollments_count > 10 ? 'Best Seller' : ($course->created_at->diffInDays() < 7 ? 'New' : null)"
                     />
                 @endforeach
             </div>
             
             <div class="mt-16 text-center">
-                <a href="/courses" class="inline-flex items-center gap-2 text-indigo-600 font-bold text-lg hover:underline">
+                <a href="{{ route('courses.index') }}" class="inline-flex items-center gap-2 text-indigo-600 font-bold text-lg hover:underline">
                     Explore all courses
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                 </a>

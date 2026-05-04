@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'role_id', 'profile_photo'])]
+#[Fillable(['name', 'email', 'password', 'role_id', 'profile_photo', 'status'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -84,5 +84,20 @@ class User extends Authenticatable
     public function wishlistedCourses(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Course::class, 'wishlists')->withTimestamps();
+    }
+
+    public function completedLessons(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Lesson::class, 'lesson_completions')->withPivot('completed_at');
+    }
+
+    public function quizAttempts(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(QuizAttempt::class);
+    }
+
+    public function certificates(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Certificate::class);
     }
 }

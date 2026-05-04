@@ -1,88 +1,247 @@
 @extends('layouts.instructor')
 
-@section('title', 'Edit Course - EduPlatform')
+@section('title', 'Edit Course - ' . $course->title)
 
 @section('content')
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <nav class="mb-8">
-            <a href="{{ route('instructor.courses.index') }}" class="text-sm font-bold text-indigo-600 hover:underline flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-                Back to My Courses
-            </a>
+    <div class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <!-- Breadcrumbs & Header -->
+        <nav class="flex mb-8" aria-label="Breadcrumb">
+            <ol class="flex items-center space-x-4">
+                <li>
+                    <div>
+                        <a href="{{ route('instructor.courses.index') }}" class="text-slate-400 hover:text-slate-500 transition-colors">
+                            <span class="text-sm font-medium">My Courses</span>
+                        </a>
+                    </div>
+                </li>
+                <li>
+                    <div class="flex items-center">
+                        <svg class="flex-shrink-0 h-5 w-5 text-slate-300" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" />
+                        </svg>
+                        <span class="ml-4 text-sm font-bold text-slate-900">Edit Course</span>
+                    </div>
+                </li>
+            </ol>
         </nav>
 
-        <h1 class="text-3xl font-extrabold text-slate-900 mb-8">Edit Course: {{ $course->title }}</h1>
+        <div class="mb-12">
+            <h1 class="text-4xl font-black text-slate-900 tracking-tight line-clamp-1">Edit: {{ $course->title }}</h1>
+            <p class="mt-2 text-lg text-slate-500 font-medium">Update your course details, pricing, and visibility.</p>
+        </div>
 
-        <form action="{{ route('instructor.courses.update', $course) }}" method="POST" enctype="multipart/form-data" class="space-y-8 bg-white p-10 rounded-2xl border border-slate-200 shadow-sm">
+        <form action="{{ route('instructor.courses.update', $course) }}" method="POST" enctype="multipart/form-data" class="space-y-12">
             @csrf
             @method('PUT')
 
-            <div>
-                <x-input-label for="title" :value="__('Course Title')" />
-                <x-text-input id="title" class="block mt-1 w-full" type="text" name="title" :value="old('title', $course->title)" required autofocus />
-                <x-input-error :messages="$errors->get('title')" class="mt-2" />
-            </div>
-
-            <div>
-                <x-input-label for="category_id" :value="__('Category')" />
-                <select id="category_id" name="category_id" class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
-                    @foreach($categories as $category)
-                        <option value="{{ $category->id }}" {{ old('category_id', $course->category_id) == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
-                    @endforeach
-                </select>
-                <x-input-error :messages="$errors->get('category_id')" class="mt-2" />
-            </div>
-
-            <div>
-                <x-input-label for="description" :value="__('Course Description')" />
-                <textarea id="description" name="description" rows="6" class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">{{ old('description', $course->description) }}</textarea>
-                <x-input-error :messages="$errors->get('description')" class="mt-2" />
-            </div>
-
-            <div class="grid grid-cols-2 gap-8">
-                <div>
-                    <x-input-label for="price" :value="__('Price ($)')" />
-                    <x-text-input id="price" class="block mt-1 w-full" type="number" name="price" :value="old('price', $course->price)" step="0.01" required />
-                    <x-input-error :messages="$errors->get('price')" class="mt-2" />
+            <!-- Basic Info Section -->
+            <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-8 border-b border-slate-50 bg-slate-50/50">
+                    <h2 class="text-xl font-black text-slate-900">Basic Information</h2>
+                    <p class="text-sm text-slate-500 font-medium">This information will be displayed on the course landing page.</p>
                 </div>
-                <div>
-                    <x-input-label for="status" :value="__('Status')" />
-                    <select id="status" name="status" class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
-                        <option value="draft" {{ old('status', $course->status) == 'draft' ? 'selected' : '' }}>Draft</option>
-                        <option value="published" {{ old('status', $course->status) == 'published' ? 'selected' : '' }}>Published</option>
-                    </select>
-                    <x-input-error :messages="$errors->get('status')" class="mt-2" />
-                </div>
-            </div>
-
-            <div>
-                <x-input-label for="thumbnail" :value="__('Course Thumbnail')" />
-                @if($course->thumbnail)
-                    <div class="mb-4">
-                        <img src="{{ asset('storage/' . $course->thumbnail) }}" class="w-40 rounded-lg shadow-md border border-slate-200">
-                        <p class="text-xs text-slate-400 mt-2">Current Thumbnail</p>
+                <div class="p-8 space-y-8">
+                    <div class="space-y-2">
+                        <label for="title" class="text-sm font-bold text-slate-700 ml-1">Course Title</label>
+                        <input id="title" name="title" type="text" 
+                               class="block w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none" 
+                               value="{{ old('title', $course->title) }}" required autofocus />
+                        @if($errors->has('title'))
+                            <p class="text-xs font-bold text-rose-500 mt-2 ml-1">{{ $errors->first('title') }}</p>
+                        @endif
                     </div>
-                @endif
-                <div class="mt-2 flex items-center justify-center px-6 pt-5 pb-6 border-2 border-slate-200 border-dashed rounded-xl hover:border-indigo-400 transition-colors cursor-pointer group">
-                    <div class="space-y-1 text-center">
-                        <svg class="mx-auto h-12 w-12 text-slate-300 group-hover:text-indigo-400 transition-colors" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                        <div class="flex text-sm text-slate-600">
-                            <label for="thumbnail" class="relative cursor-pointer bg-white rounded-md font-bold text-indigo-600 hover:text-indigo-500 focus-within:outline-none">
-                                <span>Upload a new file</span>
-                                <input id="thumbnail" name="thumbnail" type="file" class="sr-only">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-2">
+                            <label for="category_id" class="text-sm font-bold text-slate-700 ml-1">Category</label>
+                            <div class="relative">
+                                <select id="category_id" name="category_id" 
+                                        class="appearance-none block w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none cursor-pointer">
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->id }}" {{ old('category_id', $course->category_id) == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-slate-400">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label for="level" class="text-sm font-bold text-slate-700 ml-1">Target Level</label>
+                            <div class="relative">
+                                <select id="level" name="level" 
+                                        class="appearance-none block w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none cursor-pointer">
+                                    <option value="beginner" {{ old('level', $course->level) == 'beginner' ? 'selected' : '' }}>Beginner</option>
+                                    <option value="intermediate" {{ old('level', $course->level) == 'intermediate' ? 'selected' : '' }}>Intermediate</option>
+                                    <option value="advanced" {{ old('level', $course->level) == 'advanced' ? 'selected' : '' }}>Advanced</option>
+                                    <option value="all" {{ old('level', $course->level) == 'all' ? 'selected' : '' }}>All Levels</option>
+                                </select>
+                                <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-slate-400">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="description" class="text-sm font-bold text-slate-700 ml-1">Course Description</label>
+                        <textarea id="description" name="description" rows="6" 
+                                  class="block w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none resize-none" 
+                                  placeholder="What is your course about?">{{ old('description', $course->description) }}</textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
+                        <div class="space-y-2">
+                            <label for="language" class="text-sm font-bold text-slate-700 ml-1">Course Language</label>
+                            <input id="language" name="language" type="text" 
+                                   class="block w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none" 
+                                   placeholder="e.g. English, French, Khmer" value="{{ old('language', $course->language ?? 'English') }}" required />
+                        </div>
+                        <div class="space-y-2">
+                            <label for="duration" class="text-sm font-bold text-slate-700 ml-1">Total Duration</label>
+                            <input id="duration" name="duration" type="text" 
+                                   class="block w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none" 
+                                   placeholder="e.g. 12 Hours, 45 Lectures" value="{{ old('duration', $course->duration) }}" />
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 pt-4">
+                        <label class="text-sm font-bold text-slate-700 ml-1">Certificate of Completion</label>
+                        <div class="flex gap-4 p-2 bg-slate-50 rounded-2xl border border-slate-100 max-w-xs">
+                            <label class="flex-1 cursor-pointer">
+                                <input type="radio" name="has_certificate" value="1" class="peer hidden" {{ old('has_certificate', $course->has_certificate) ? 'checked' : '' }}>
+                                <div class="text-center py-3 rounded-xl font-black text-xs uppercase tracking-widest text-slate-400 peer-checked:bg-white peer-checked:text-indigo-600 peer-checked:shadow-sm transition-all border border-transparent peer-checked:border-slate-100">
+                                    Yes
+                                </div>
+                            </label>
+                            <label class="flex-1 cursor-pointer">
+                                <input type="radio" name="has_certificate" value="0" class="peer hidden" {{ !old('has_certificate', $course->has_certificate) ? 'checked' : '' }}>
+                                <div class="text-center py-3 rounded-xl font-black text-xs uppercase tracking-widest text-slate-400 peer-checked:bg-white peer-checked:text-rose-600 peer-checked:shadow-sm transition-all border border-transparent peer-checked:border-slate-100">
+                                    No
+                                </div>
                             </label>
                         </div>
                     </div>
                 </div>
-                <x-input-error :messages="$errors->get('thumbnail')" class="mt-2" />
             </div>
 
-            <div class="pt-4 border-t border-slate-100 flex justify-end gap-4">
-                <a href="{{ route('instructor.courses.index') }}" class="px-8 py-4 text-slate-600 font-bold hover:text-slate-900">Cancel</a>
-                <button type="submit" class="bg-indigo-600 text-white px-10 py-4 rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-200">Update Course</button>
+            <!-- Learning Outcomes & Audience -->
+            <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-8 border-b border-slate-50 bg-slate-50/50">
+                    <h2 class="text-xl font-black text-slate-900">Curriculum Details</h2>
+                    <p class="text-sm text-slate-500 font-medium">Help students understand what they will achieve.</p>
+                </div>
+                <div class="p-8 space-y-8">
+                    <div class="space-y-2">
+                        <label for="what_will_learn" class="text-sm font-bold text-slate-700 ml-1">What will students learn?</label>
+                        <textarea id="what_will_learn" name="what_will_learn" rows="4" 
+                                  class="block w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none resize-none" 
+                                  placeholder="Enter learning outcomes, one per line...">{{ old('what_will_learn', $course->what_will_learn) }}</textarea>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="requirements" class="text-sm font-bold text-slate-700 ml-1">Requirements / Prerequisites</label>
+                        <textarea id="requirements" name="requirements" rows="3" 
+                                  class="block w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none resize-none" 
+                                  placeholder="What do students need to know before starting?">{{ old('requirements', $course->requirements) }}</textarea>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="target_audience" class="text-sm font-bold text-slate-700 ml-1">Target Audience</label>
+                        <textarea id="target_audience" name="target_audience" rows="3" 
+                                  class="block w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none resize-none" 
+                                  placeholder="Who is this course for?">{{ old('target_audience', $course->target_audience) }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Media & Pricing Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                    <div class="p-8 border-b border-slate-50 bg-slate-50/50">
+                        <h2 class="text-xl font-black text-slate-900">Thumbnail</h2>
+                        <p class="text-sm text-slate-500 font-medium">Update your course cover image.</p>
+                    </div>
+                    <div class="p-8 flex-1 flex flex-col justify-center">
+                        <div class="relative group" x-data="{ photoPreview: null }">
+                            <div class="mt-1 flex justify-center px-6 pt-10 pb-10 border-2 border-slate-200 border-dashed rounded-3xl hover:border-indigo-400 transition-all cursor-pointer bg-slate-50/50"
+                                 @click="$refs.thumbnailInput.click()">
+                                <div class="space-y-4 text-center">
+                                    <template x-if="!photoPreview">
+                                        <div class="relative">
+                                            <img src="{{ $course->thumbnail ? asset('storage/' . $course->thumbnail) : 'https://placehold.co/800x450?text=No+Thumbnail' }}" 
+                                                 class="mx-auto h-32 w-full object-cover rounded-2xl shadow-lg border-2 border-white transition-all group-hover:opacity-50">
+                                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <div class="bg-white/90 backdrop-blur-sm p-3 rounded-xl shadow-xl text-indigo-600 font-black text-xs uppercase tracking-widest">Change Photo</div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <img x-show="photoPreview" :src="photoPreview" class="mx-auto h-32 w-full object-cover rounded-2xl shadow-lg border-2 border-white" style="display: none;">
+                                    
+                                    <div class="text-xs text-slate-400 font-medium">
+                                        PNG, JPG, WebP up to 5MB
+                                    </div>
+                                    <input id="thumbnail" name="thumbnail" type="file" class="sr-only" x-ref="thumbnailInput"
+                                           @change="
+                                                const file = $event.target.files[0];
+                                                if (file) {
+                                                    const reader = new FileReader();
+                                                    reader.onload = (e) => { photoPreview = e.target.result; };
+                                                    reader.readAsDataURL(file);
+                                                }
+                                           ">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-8 border-b border-slate-50 bg-slate-50/50">
+                        <h2 class="text-xl font-black text-slate-900">Pricing & Status</h2>
+                        <p class="text-sm text-slate-500 font-medium">Set your price and visibility.</p>
+                    </div>
+                    <div class="p-8 space-y-8">
+                        <div class="space-y-2">
+                            <label for="price" class="text-sm font-bold text-slate-700 ml-1">Price ($)</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-5 flex items-center text-slate-400 font-bold">$</span>
+                                <input id="price" name="price" type="number" step="0.01" 
+                                       class="block w-full pl-10 pr-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 text-sm font-black focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none" 
+                                       value="{{ old('price', $course->price) }}" required />
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="status" class="text-sm font-bold text-slate-700 ml-1">Course Status</label>
+                            <div class="flex gap-4 p-2 bg-slate-50 rounded-2xl border border-slate-100">
+                                <label class="flex-1 cursor-pointer">
+                                    <input type="radio" name="status" value="draft" class="peer hidden" {{ old('status', $course->status) == 'draft' ? 'checked' : '' }}>
+                                    <div class="text-center py-3 rounded-xl font-black text-xs uppercase tracking-widest text-slate-400 peer-checked:bg-white peer-checked:text-indigo-600 peer-checked:shadow-sm transition-all border border-transparent peer-checked:border-slate-100">
+                                        Draft
+                                    </div>
+                                </label>
+                                <label class="flex-1 cursor-pointer">
+                                    <input type="radio" name="status" value="published" class="peer hidden" {{ old('status', $course->status) == 'published' ? 'checked' : '' }}>
+                                    <div class="text-center py-3 rounded-xl font-black text-xs uppercase tracking-widest text-slate-400 peer-checked:bg-white peer-checked:text-emerald-600 peer-checked:shadow-sm transition-all border border-transparent peer-checked:border-slate-100">
+                                        Publish
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Actions -->
+            <div class="pt-12 border-t border-slate-200 flex items-center justify-between">
+                <button type="button" onclick="history.back()" class="text-sm font-black text-slate-400 hover:text-slate-600 uppercase tracking-widest transition-colors">Discard Changes</button>
+                <div class="flex gap-4">
+                    <a href="{{ route('instructor.courses.curriculum', $course) }}" class="px-8 py-4 rounded-2xl font-black text-sm text-indigo-600 hover:bg-indigo-50 transition-all uppercase tracking-widest">Edit Curriculum</a>
+                    <button type="submit" class="px-12 py-4 bg-slate-900 text-white rounded-2xl font-black text-sm hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 uppercase tracking-widest">Update Course &rarr;</button>
+                </div>
             </div>
         </form>
     </div>
 @endsection
+

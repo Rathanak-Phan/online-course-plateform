@@ -16,7 +16,9 @@ class Order extends Model
         'total_amount', 
         'status', 
         'payment_method', 
-        'transaction_id'
+        'payment_proof',
+        'transaction_id',
+        'rejection_reason'
     ];
 
     public function user(): BelongsTo

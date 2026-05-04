@@ -87,7 +87,70 @@
                         <label for="description" class="text-sm font-bold text-slate-700 ml-1">Course Description</label>
                         <textarea id="description" name="description" rows="6" 
                                   class="block w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none resize-none" 
-                                  placeholder="What is your course about? Be as descriptive as possible."></textarea>
+                                  placeholder="What is your course about? Be as descriptive as possible.">{{ old('description') }}</textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
+                        <div class="space-y-2">
+                            <label for="language" class="text-sm font-bold text-slate-700 ml-1">Course Language</label>
+                            <input id="language" name="language" type="text" 
+                                   class="block w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none" 
+                                   placeholder="e.g. English, French, Khmer" value="{{ old('language', 'English') }}" required />
+                        </div>
+                        <div class="space-y-2">
+                            <label for="duration" class="text-sm font-bold text-slate-700 ml-1">Total Duration</label>
+                            <input id="duration" name="duration" type="text" 
+                                   class="block w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none" 
+                                   placeholder="e.g. 12 Hours, 45 Lectures" value="{{ old('duration') }}" />
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 pt-4">
+                        <label class="text-sm font-bold text-slate-700 ml-1">Certificate of Completion</label>
+                        <div class="flex gap-4 p-2 bg-slate-50 rounded-2xl border border-slate-100 max-w-xs">
+                            <label class="flex-1 cursor-pointer">
+                                <input type="radio" name="has_certificate" value="1" class="peer hidden" checked>
+                                <div class="text-center py-3 rounded-xl font-black text-xs uppercase tracking-widest text-slate-400 peer-checked:bg-white peer-checked:text-indigo-600 peer-checked:shadow-sm transition-all border border-transparent peer-checked:border-slate-100">
+                                    Yes
+                                </div>
+                            </label>
+                            <label class="flex-1 cursor-pointer">
+                                <input type="radio" name="has_certificate" value="0" class="peer hidden">
+                                <div class="text-center py-3 rounded-xl font-black text-xs uppercase tracking-widest text-slate-400 peer-checked:bg-white peer-checked:text-rose-600 peer-checked:shadow-sm transition-all border border-transparent peer-checked:border-slate-100">
+                                    No
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Learning Outcomes & Audience -->
+            <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-8 border-b border-slate-50 bg-slate-50/50">
+                    <h2 class="text-xl font-black text-slate-900">Curriculum Details</h2>
+                    <p class="text-sm text-slate-500 font-medium">Help students understand what they will achieve.</p>
+                </div>
+                <div class="p-8 space-y-8">
+                    <div class="space-y-2">
+                        <label for="what_will_learn" class="text-sm font-bold text-slate-700 ml-1">What will students learn?</label>
+                        <textarea id="what_will_learn" name="what_will_learn" rows="4" 
+                                  class="block w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none resize-none" 
+                                  placeholder="Enter learning outcomes, one per line...">{{ old('what_will_learn') }}</textarea>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="requirements" class="text-sm font-bold text-slate-700 ml-1">Requirements / Prerequisites</label>
+                        <textarea id="requirements" name="requirements" rows="3" 
+                                  class="block w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none resize-none" 
+                                  placeholder="What do students need to know before starting?">{{ old('requirements') }}</textarea>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="target_audience" class="text-sm font-bold text-slate-700 ml-1">Target Audience</label>
+                        <textarea id="target_audience" name="target_audience" rows="3" 
+                                  class="block w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none resize-none" 
+                                  placeholder="Who is this course for?">{{ old('target_audience') }}</textarea>
                     </div>
                 </div>
             </div>
