@@ -72,11 +72,12 @@ class PaymentController extends Controller
                 // Enroll user
                 auth()->user()->enrollments()->create([
                     'course_id' => $course->id,
+                    'price' => $course->price,
                     'progress' => 0,
                 ]);
             }
 
-            return redirect()->route('student.my-courses')->with('success', 'Thank you for your purchase!');
+            return redirect()->route('student.dashboard')->with('success', 'Thank you for your purchase!');
         }
 
         return redirect()->route('courses.show', $course->id)->with('error', 'Payment failed.');

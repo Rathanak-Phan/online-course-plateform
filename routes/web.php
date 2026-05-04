@@ -22,11 +22,9 @@ Route::middleware('auth')->group(function () {
 
 // Role-based Route Groups
 Route::middleware(['auth', 'role:student'])->group(function () {
-    Route::get('/student/dashboard', function () {
-        return view('student.dashboard');
-    })->name('student.dashboard');
+    Route::get('/student/dashboard', [\App\Http\Controllers\Student\DashboardController::class, 'index'])->name('student.dashboard');
     
-    Route::get('/my-learning', [\App\Http\Controllers\EnrollmentController::class, 'myCourses'])->name('student.my-courses');
+
     Route::post('/courses/{course}/enroll', [\App\Http\Controllers\EnrollmentController::class, 'enroll'])->name('courses.enroll');
     
     // Stripe Payments
@@ -67,6 +65,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::delete('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('users.destroy');
     Route::get('/courses', [\App\Http\Controllers\Admin\CourseController::class, 'index'])->name('courses.index');
     Route::delete('/courses/{course}', [\App\Http\Controllers\Admin\CourseController::class, 'destroy'])->name('courses.destroy');
+    
+    Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
 });
 
 require __DIR__.'/auth.php';

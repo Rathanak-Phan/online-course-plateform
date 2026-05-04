@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
+use App\Models\Role;
 use App\Models\User;
+use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -37,17 +38,25 @@ class RegisteredUserController extends Controller
             'role' => ['nullable', 'string', 'in:student,instructor'],
         ]);
 
+        $role = Role::where('slug', $request->role ?? 'student')->first();
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role ?? 'student',
+            'role_id' => $role ? $role->id : null,
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        if ($user->hasRole('admin')) {
+            return redirect(route('admin.dashboard'));
+        } elseif ($user->hasRole('instructor')) {
+            return redirect(route('instructor.dashboard'));
+        }
+
+        return redirect('/');
     }
 }

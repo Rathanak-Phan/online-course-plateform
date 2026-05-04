@@ -83,14 +83,15 @@
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                 @php
                     $featured = [
-                        ['title' => 'Full-Stack Web Development Bootcamp 2024', 'instructor' => 'Dr. Angela Yu', 'price' => 99.99, 'rating' => 4.9, 'reviews' => '12.4k', 'image' => 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=400&q=80', 'badge' => 'Best Seller'],
-                        ['title' => 'Advanced UI/UX Design Mastery', 'instructor' => 'Gary Simon', 'price' => 84.99, 'rating' => 4.8, 'reviews' => '8.2k', 'image' => 'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=400&q=80', 'badge' => 'New'],
-                        ['title' => 'Python for Data Science and AI', 'instructor' => 'Jose Portilla', 'price' => 74.99, 'rating' => 4.7, 'reviews' => '25k', 'image' => 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=400&q=80', 'badge' => null],
-                        ['title' => 'Digital Marketing Strategy 2024', 'instructor' => 'Seth Godin', 'price' => 89.99, 'rating' => 4.9, 'reviews' => '5.1k', 'image' => 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=400&q=80', 'badge' => 'Popular'],
+                        ['id' => 1, 'title' => 'Full-Stack Web Development Bootcamp 2024', 'instructor' => 'Dr. Angela Yu', 'price' => 99.99, 'rating' => 4.9, 'reviews' => '12.4k', 'image' => 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=400&q=80', 'badge' => 'Best Seller'],
+                        ['id' => 2, 'title' => 'Advanced UI/UX Design Mastery', 'instructor' => 'Gary Simon', 'price' => 84.99, 'rating' => 4.8, 'reviews' => '8.2k', 'image' => 'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=400&q=80', 'badge' => 'New'],
+                        ['id' => 3, 'title' => 'Python for Data Science and AI', 'instructor' => 'Jose Portilla', 'price' => 74.99, 'rating' => 4.7, 'reviews' => '25k', 'image' => 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=400&q=80', 'badge' => null],
+                        ['id' => 4, 'title' => 'Digital Marketing Strategy 2024', 'instructor' => 'Seth Godin', 'price' => 89.99, 'rating' => 4.9, 'reviews' => '5.1k', 'image' => 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=400&q=80', 'badge' => 'Popular'],
                     ];
                 @endphp
                 @foreach($featured as $course)
                     <x-course-card 
+                        :id="$course['id']"
                         :title="$course['title']" 
                         :instructor="$course['instructor']" 
                         :price="$course['price']" 
