@@ -15,6 +15,16 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \App\Http\Middleware\RoleMiddleware::class,
             'course_access' => \App\Http\Middleware\CheckCourseAccess::class,
         ]);
+
+        $middleware->redirectUsersTo(function () {
+            $user = auth()->user();
+            if ($user->hasRole('admin')) {
+                return route('admin.dashboard');
+            } elseif ($user->hasRole('instructor')) {
+                return route('instructor.dashboard');
+            }
+            return '/';
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

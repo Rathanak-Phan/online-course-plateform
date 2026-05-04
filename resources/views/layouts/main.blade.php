@@ -33,10 +33,54 @@
 
                 <div class="flex items-center gap-4">
                     @auth
-                        @if(auth()->user()->hasRole('student'))
-                            <a href="{{ route('student.my-courses') }}" class="text-sm font-medium text-slate-600 hover:text-indigo-600">My Learning</a>
-                        @endif
-                        <a href="{{ route('dashboard') }}" class="text-sm font-medium text-slate-600 hover:text-indigo-600">Dashboard</a>
+                        @php
+                            $dashboardRoute = '#';
+                            if(auth()->user()->hasRole('student')) $dashboardRoute = route('student.dashboard');
+                            elseif(auth()->user()->hasRole('instructor')) $dashboardRoute = route('instructor.dashboard');
+                            elseif(auth()->user()->hasRole('admin')) $dashboardRoute = route('admin.dashboard');
+                        @endphp
+                        
+                        <div class="relative" x-data="{ open: false }">
+                            <button @click="open = !open" @click.away="open = false" class="flex items-center gap-3 focus:outline-none group">
+                                <div class="text-right hidden sm:block">
+                                    <p class="text-xs font-black text-slate-900 leading-none">{{ auth()->user()->name }}</p>
+                                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">
+                                        {{ ucfirst(auth()->user()->role->name ?? 'User') }}
+                                    </p>
+                                </div>
+                                <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=6366f1&color=fff" class="w-10 h-10 rounded-xl shadow-sm border-2 border-white group-hover:border-indigo-100 transition-all">
+                            </button>
+                            
+                            <!-- Dropdown Menu -->
+                            <div x-show="open" 
+                                 x-transition:enter="transition ease-out duration-100"
+                                 x-transition:enter-start="transform opacity-0 scale-95"
+                                 x-transition:enter-end="transform opacity-100 scale-100"
+                                 class="absolute right-0 mt-3 w-56 bg-white rounded-2xl shadow-xl border border-slate-100 py-2 z-50">
+                                <div class="px-4 py-3 border-b border-slate-50 mb-1 sm:hidden">
+                                    <p class="text-sm font-bold text-slate-900 leading-none">{{ auth()->user()->name }}</p>
+                                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">
+                                        {{ ucfirst(auth()->user()->role->name ?? 'User') }}
+                                    </p>
+                                </div>
+                                <a href="{{ $dashboardRoute }}" class="flex items-center gap-3 px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition-colors">
+                                    <svg class="w-5 h-5 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+                                    My Dashboard
+                                </a>
+                                <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition-colors">
+                                    <svg class="w-5 h-5 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                                    Profile Settings
+                                </a>
+                                <div class="border-t border-slate-100 my-1"></div>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="flex items-center gap-3 w-full text-left px-4 py-3 text-sm font-bold text-rose-500 hover:bg-rose-50 transition-colors">
+                                        <svg class="w-5 h-5 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                                        Log Out
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     @else
                         <a href="{{ route('login') }}" class="text-sm font-medium text-slate-600 hover:text-indigo-600">Log in</a>
                         <a href="{{ route('register') }}" class="bg-indigo-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200">Sign up</a>

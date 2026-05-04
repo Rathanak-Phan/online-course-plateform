@@ -13,3 +13,25 @@
 .gradient-text {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600;
 }
+
+.glass-effect {
+    @apply bg-white/80 backdrop-blur-xl border border-white/20;
+}
+
+.auth-card {
+    @apply glass-effect shadow-2xl shadow-indigo-500/10 rounded-3xl;
+}
+
+.btn-primary-gradient {
+    @apply bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold py-3 px-6 rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 transform hover:-translate-y-0.5 active:scale-[0.98];
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+.animate-float {
+    animation: float 6s ease-in-out infinite;
+}

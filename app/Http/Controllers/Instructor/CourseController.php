@@ -37,7 +37,9 @@ class CourseController extends Controller
             'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+            'level' => 'required|in:beginner,intermediate,advanced,all',
+            'status' => 'required|in:draft,published',
         ]);
 
         $data = $request->all();

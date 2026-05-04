@@ -20,15 +20,10 @@ class EnrollmentController extends Controller
         // Create enrollment
         $user->enrollments()->create([
             'course_id' => $course->id,
+            'price' => $course->price,
             'progress' => 0,
         ]);
 
-        return redirect()->route('student.my-courses')->with('success', 'Successfully enrolled in ' . $course->title);
-    }
-
-    public function myCourses()
-    {
-        $courses = auth()->user()->enrolledCourses()->latest()->get();
-        return view('student.my-courses', compact('courses'));
+        return redirect()->route('student.dashboard')->with('success', 'Successfully enrolled in ' . $course->title);
     }
 }
