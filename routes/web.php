@@ -3,9 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('home');
-});
+Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::get('/courses', [\App\Http\Controllers\PublicCourseController::class, 'index'])->name('courses.index');
 Route::get('/courses/{id}', [\App\Http\Controllers\PublicCourseController::class, 'show'])->name('courses.show');
@@ -30,6 +28,8 @@ Route::middleware(['auth', 'role:student'])->group(function () {
     // Stripe Payments
     Route::post('/checkout/{course}', [\App\Http\Controllers\PaymentController::class, 'checkout'])->name('checkout');
     Route::get('/payment/success', [\App\Http\Controllers\PaymentController::class, 'success'])->name('payment.success');
+    Route::get('/payment/fake/{course}', [\App\Http\Controllers\PaymentController::class, 'fakePayment'])->name('payment.fake');
+    Route::post('/payment/fake/{course}/process', [\App\Http\Controllers\PaymentController::class, 'processFakePayment'])->name('payment.fake.process');
     
     // Reviews
     Route::post('/courses/{course}/reviews', [\App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
@@ -42,9 +42,10 @@ Route::middleware(['auth', 'role:student'])->group(function () {
 });
 
 Route::middleware(['auth', 'role:instructor'])->prefix('instructor')->name('instructor.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('instructor.dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [\App\Http\Controllers\Instructor\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/students', [\App\Http\Controllers\Instructor\DashboardController::class, 'students'])->name('students');
+    Route::get('/earnings', [\App\Http\Controllers\Instructor\DashboardController::class, 'earnings'])->name('earnings');
+    Route::get('/reviews', [\App\Http\Controllers\Instructor\DashboardController::class, 'reviews'])->name('reviews');
     
     Route::resource('courses', \App\Http\Controllers\Instructor\CourseController::class);
     Route::get('courses/{course}/curriculum', [\App\Http\Controllers\Instructor\CourseController::class, 'curriculum'])->name('courses.curriculum');
@@ -61,9 +62,17 @@ Route::middleware(['auth', 'role:instructor'])->prefix('instructor')->name('inst
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/transactions', [\App\Http\Controllers\Admin\DashboardController::class, 'transactions'])->name('transactions');
+    Route::get('/settings', [\App\Http\Controllers\Admin\DashboardController::class, 'settings'])->name('settings');
+    Route::post('/settings/update', [\App\Http\Controllers\Admin\DashboardController::class, 'updateSettings'])->name('settings.update');
+    Route::post('/payment-mode/toggle', [\App\Http\Controllers\Admin\DashboardController::class, 'togglePaymentMode'])->name('payment-mode.toggle');
     Route::get('/users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('users.index');
+    Route::post('/users', [\App\Http\Controllers\Admin\UserController::class, 'store'])->name('users.store');
+    Route::patch('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('users.update');
     Route::delete('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('users.destroy');
+    
     Route::get('/courses', [\App\Http\Controllers\Admin\CourseController::class, 'index'])->name('courses.index');
+    Route::patch('/courses/{course}/toggle-status', [\App\Http\Controllers\Admin\CourseController::class, 'toggleStatus'])->name('courses.toggle-status');
     Route::delete('/courses/{course}', [\App\Http\Controllers\Admin\CourseController::class, 'destroy'])->name('courses.destroy');
     
     Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);

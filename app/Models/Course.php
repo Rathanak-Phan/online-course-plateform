@@ -23,6 +23,12 @@ class Course extends Model
         'thumbnail', 
         'video_url', 
         'level', 
+        'language',
+        'duration',
+        'requirements',
+        'what_will_learn',
+        'target_audience',
+        'has_certificate',
         'status', 
         'is_featured'
     ];
@@ -65,5 +71,10 @@ class Course extends Model
     public function wishlistedBy(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'wishlists')->withTimestamps();
+    }
+
+    public function certificates(): HasMany
+    {
+        return $this->hasMany(Certificate::class);
     }
 }

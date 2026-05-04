@@ -28,4 +28,14 @@ class Lesson extends Model
     {
         return $this->belongsTo(Section::class);
     }
+
+    public function completions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(LessonCompletion::class);
+    }
+
+    public function quiz(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Quiz::class);
+    }
 }

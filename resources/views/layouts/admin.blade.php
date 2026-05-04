@@ -72,7 +72,7 @@
         </header>
 
         <!-- Page Content -->
-        <main class="p-8">
+        <main class="p-8 animate-in fade-in duration-700">
             @yield('content')
         </main>
     </div>

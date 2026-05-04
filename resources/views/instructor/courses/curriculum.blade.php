@@ -20,9 +20,18 @@
         </div>
 
         @if(session('success'))
-            <div class="bg-green-50 border border-green-200 text-green-700 px-6 py-4 rounded-xl mb-8 flex justify-between items-center">
-                <span class="font-medium">{{ session('success') }}</span>
-                <button onclick="this.parentElement.remove()" class="text-green-500 hover:text-green-700">
+            <div class="bg-emerald-50 border border-emerald-100 text-emerald-700 px-6 py-4 rounded-xl mb-8 flex justify-between items-center shadow-sm">
+                <span class="font-bold text-sm">{{ session('success') }}</span>
+                <button onclick="this.parentElement.remove()" class="text-emerald-400 hover:text-emerald-600 transition-colors">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="bg-rose-50 border border-rose-100 text-rose-700 px-6 py-4 rounded-xl mb-8 flex justify-between items-center shadow-sm">
+                <span class="font-bold text-sm">{{ session('error') }}</span>
+                <button onclick="this.parentElement.remove()" class="text-rose-400 hover:text-rose-600 transition-colors">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
             </div>

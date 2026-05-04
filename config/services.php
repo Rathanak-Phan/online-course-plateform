@@ -40,4 +40,8 @@ return [
         ],
     ],
 
+    'payment' => [
+        'mode' => env('PAYMENT_MODE', 'stripe'), // 'stripe' or 'fake'
+    ],
+
 ];
