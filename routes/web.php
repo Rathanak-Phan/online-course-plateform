@@ -7,6 +7,7 @@ Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('h
 
 Route::get('/courses', [\App\Http\Controllers\PublicCourseController::class, 'index'])->name('courses.index');
 Route::get('/courses/{id}', [\App\Http\Controllers\PublicCourseController::class, 'show'])->name('courses.show');
+Route::get('/verify-certificate/{hash}', [\App\Http\Controllers\CertificateController::class, 'verify'])->name('certificates.verify');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -35,6 +36,14 @@ Route::middleware(['auth', 'role:student'])->group(function () {
     Route::post('/courses/{course}/reviews', [\App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
     Route::put('/reviews/{review}', [\App\Http\Controllers\ReviewController::class, 'update'])->name('reviews.update');
     Route::delete('/reviews/{review}', [\App\Http\Controllers\ReviewController::class, 'destroy'])->name('reviews.destroy');
+
+    // Learning
+    Route::get('/my-courses', [\App\Http\Controllers\Student\CourseController::class, 'index'])->name('student.courses.index');
+    Route::get('/student/courses/{course}/learn/{lesson?}', [\App\Http\Controllers\Student\CourseController::class, 'learn'])->name('student.courses.learn');
+    Route::post('/student/courses/{course}/lessons/{lesson}/complete', [\App\Http\Controllers\Student\CourseController::class, 'completeLesson'])->name('student.courses.complete-lesson');
+    Route::get('/student/courses/{course}/certificate', [\App\Http\Controllers\Student\CourseController::class, 'downloadCertificate'])->name('student.courses.certificate');
+    Route::get('/student/certificates', [\App\Http\Controllers\Student\CourseController::class, 'certificates'])->name('student.certificates');
+    Route::delete('/student/courses/{course}/unenroll', [\App\Http\Controllers\Student\CourseController::class, 'unenroll'])->name('student.courses.unenroll');
 
     // Wishlist
     Route::get('/wishlist', [\App\Http\Controllers\WishlistController::class, 'index'])->name('student.wishlist');
@@ -77,5 +86,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     
     Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
 });
+
+Route::get('/auth/google', [\App\Http\Controllers\Auth\GoogleController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('/auth/google/callback', [\App\Http\Controllers\Auth\GoogleController::class, 'handleGoogleCallback']);
 
 require __DIR__.'/auth.php';

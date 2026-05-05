@@ -15,7 +15,26 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, \App\Traits\Searchable;
+
+    protected $searchable = ['name', 'email'];
+
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['search'] ?? null, function ($query, $search) {
+            $query->search($search);
+        });
+
+        $query->when($filters['role'] ?? null, function ($query, $role) {
+            $query->where('role_id', $role);
+        });
+
+        $query->when($filters['status'] ?? null, function ($query, $status) {
+            $query->where('status', $status);
+        });
+
+        return $query;
+    }
 
     const ROLE_STUDENT = 'student';
     const ROLE_INSTRUCTOR = 'instructor';

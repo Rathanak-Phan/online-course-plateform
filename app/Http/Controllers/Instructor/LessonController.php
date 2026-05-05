@@ -40,20 +40,22 @@ class LessonController extends Controller
     {
         $this->authorizeInstructor($lesson->section->course);
 
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'type' => 'required|in:video,text,quiz,assignment',
             'video_url' => 'nullable|url',
+            'content' => 'nullable|string',
+            'attachment' => 'nullable|file|mimes:pdf,zip,doc,docx|max:10240',
         ]);
 
-        $data = $request->all();
         if ($request->hasFile('attachment')) {
             if ($lesson->attachment) {
                 Storage::disk('public')->delete($lesson->attachment);
             }
-            $data['attachment'] = $request->file('attachment')->store('lessons/attachments', 'public');
+            $validated['attachment'] = $request->file('attachment')->store('lessons/attachments', 'public');
         }
 
-        $lesson->update($data);
+        $lesson->update($validated);
 
         return back()->with('success', 'Lesson updated successfully.');
     }

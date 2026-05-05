@@ -3,20 +3,28 @@
 @section('title', 'Manage Courses - EduPlatform Admin')
 
 @section('content')
-    <div class="mb-12 flex justify-between items-center">
+    <div class="mb-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
             <h1 class="text-3xl font-black text-slate-900 mb-2 tracking-tight">Course Repository</h1>
             <p class="text-slate-500 font-medium">Review, moderate, and manage all educational content.</p>
         </div>
-        <div class="flex gap-4">
-            <select class="pl-4 pr-10 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-600 outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all appearance-none">
-                <option>All Categories</option>
+        <form action="{{ route('admin.courses.index') }}" method="GET" class="flex gap-4 w-full md:w-auto">
+            <select name="category" onchange="this.form.submit()" class="pl-4 pr-10 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-600 outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all appearance-none">
+                <option value="">All Categories</option>
+                @foreach($categories as $category)
+                    <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                @endforeach
             </select>
-            <div class="relative">
-                <input type="text" placeholder="Search courses..." class="pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all w-64">
+            <div class="relative flex-1 md:flex-none">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search courses..." class="pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all w-full md:w-64">
                 <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
             </div>
-        </div>
+            @if(request()->anyFilled(['search', 'category']))
+                <a href="{{ route('admin.courses.index') }}" class="p-2.5 bg-slate-100 text-slate-500 rounded-xl hover:bg-slate-200 transition-all" title="Clear Filters">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </a>
+            @endif
+        </form>
     </div>
 
     @if(session('success'))

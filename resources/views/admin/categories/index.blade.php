@@ -10,11 +10,22 @@
                 <h1 class="text-4xl font-black text-slate-900 tracking-tight">Content Categories</h1>
                 <p class="mt-2 text-lg text-slate-500 font-medium">Organize your platform's courses into logical groups.</p>
             </div>
-            <button @click="editMode = false; currentCategory = { id: '', name: '', icon: '' }; openModal = true" 
-                    class="inline-flex items-center gap-2 bg-indigo-600 text-white px-8 py-4 rounded-2xl font-black text-sm hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-200 uppercase tracking-widest">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" /></svg>
-                New Category
-            </button>
+            <div class="flex flex-col sm:flex-row items-center gap-4">
+                <form action="{{ route('admin.categories.index') }}" method="GET" class="relative w-full sm:w-64">
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search categories..." class="w-full pl-10 pr-4 py-4 bg-white border border-slate-200 rounded-2xl text-sm focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all shadow-sm">
+                    <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                    @if(request('search'))
+                        <a href="{{ route('admin.categories.index') }}" class="absolute right-3 top-5 text-slate-300 hover:text-slate-500">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                        </a>
+                    @endif
+                </form>
+                <button @click="editMode = false; currentCategory = { id: '', name: '', icon: '' }; openModal = true" 
+                        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-indigo-600 text-white px-8 py-4 rounded-2xl font-black text-sm hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-200 uppercase tracking-widest whitespace-nowrap">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" /></svg>
+                    New Category
+                </button>
+            </div>
         </div>
 
         @if(session('success'))
@@ -96,6 +107,11 @@
                     </tbody>
                 </table>
             </div>
+            @if($categories->hasPages())
+                <div class="px-8 py-5 bg-slate-50 border-t border-slate-100">
+                    {{ $categories->links() }}
+                </div>
+            @endif
         </div>
 
         <!-- Modal for Add/Edit -->

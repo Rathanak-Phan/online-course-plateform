@@ -9,9 +9,14 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::with('role')->latest()->paginate(20);
+        $users = User::with('role')
+            ->filter($request->only(['search', 'role', 'status']))
+            ->latest()
+            ->paginate(20)
+            ->withQueryString();
+            
         $roles = \App\Models\Role::all();
         return view('admin.users.index', compact('users', 'roles'));
     }

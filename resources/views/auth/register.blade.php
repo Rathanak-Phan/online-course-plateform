@@ -129,6 +129,22 @@
                             Create Free Account
                         </button>
                     </div>
+
+                    <div class="relative py-4">
+                        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-100"></div></div>
+                        <div class="relative flex justify-center text-sm"><span class="px-4 bg-white text-slate-400 font-medium">Or register with</span></div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <a href="{{ route('auth.google') }}" class="flex items-center justify-center gap-3 px-4 py-3 border border-slate-200 rounded-2xl hover:bg-slate-50 transition-all font-bold text-slate-700">
+                            <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
+                            Google
+                        </a>
+                        <button type="button" class="flex items-center justify-center gap-3 px-4 py-3 border border-slate-200 rounded-2xl hover:bg-slate-50 transition-all font-bold text-slate-700">
+                            <img src="https://www.svgrepo.com/show/475647/facebook-color.svg" class="w-5 h-5" alt="Facebook">
+                            Facebook
+                        </button>
+                    </div>
                 </form>
 
                 <p class="mt-10 text-center text-slate-600">

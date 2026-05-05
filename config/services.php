@@ -44,4 +44,10 @@ return [
         'mode' => env('PAYMENT_MODE', 'stripe'), // 'stripe' or 'fake'
     ],
 
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URL'),
+    ],
+
 ];
