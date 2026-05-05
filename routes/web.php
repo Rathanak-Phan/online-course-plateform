@@ -85,6 +85,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::delete('/courses/{course}', [\App\Http\Controllers\Admin\CourseController::class, 'destroy'])->name('courses.destroy');
     
     Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
+Route::get('/user/{user}', [\App\Http\Controllers\UserController::class, 'show'])->name('users.show');
 });
 
 Route::get('/auth/google', [\App\Http\Controllers\Auth\GoogleController::class, 'redirectToGoogle'])->name('auth.google');

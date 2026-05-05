@@ -56,6 +56,56 @@
             </div>
         </div>
 
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="md:col-span-2 space-y-2">
+                <label for="headline" class="text-sm font-bold text-slate-700 ml-1">{{ __('Professional Headline') }}</label>
+                <input id="headline" name="headline" type="text" 
+                       class="block w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none" 
+                       value="{{ old('headline', $user->headline) }}" placeholder="e.g. Senior Software Engineer at Google" />
+                @if($errors->get('headline'))
+                    <p class="text-xs font-bold text-rose-500 mt-2 ml-1">{{ $errors->get('headline')[0] }}</p>
+                @endif
+            </div>
+
+            <div class="md:col-span-2 space-y-2">
+                <label for="bio" class="text-sm font-bold text-slate-700 ml-1">{{ __('Bio / About Me') }}</label>
+                <textarea id="bio" name="bio" rows="4"
+                       class="block w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none resize-none" 
+                       placeholder="Share your experience and background...">{{ old('bio', $user->bio) }}</textarea>
+                @if($errors->get('bio'))
+                    <p class="text-xs font-bold text-rose-500 mt-2 ml-1">{{ $errors->get('bio')[0] }}</p>
+                @endif
+            </div>
+
+            <div class="space-y-2">
+                <label for="website" class="text-sm font-bold text-slate-700 ml-1">{{ __('Website URL') }}</label>
+                <input id="website" name="website" type="url" 
+                       class="block w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none" 
+                       value="{{ old('website', $user->website) }}" placeholder="https://yourwebsite.com" />
+            </div>
+
+            <div class="space-y-2">
+                <label for="twitter" class="text-sm font-bold text-slate-700 ml-1">{{ __('Twitter URL') }}</label>
+                <input id="twitter" name="twitter" type="url" 
+                       class="block w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none" 
+                       value="{{ old('twitter', $user->twitter) }}" placeholder="https://twitter.com/yourhandle" />
+            </div>
+
+            <div class="space-y-2">
+                <label for="linkedin" class="text-sm font-bold text-slate-700 ml-1">{{ __('LinkedIn URL') }}</label>
+                <input id="linkedin" name="linkedin" type="url" 
+                       class="block w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none" 
+                       value="{{ old('linkedin', $user->linkedin) }}" placeholder="https://linkedin.com/in/yourprofile" />
+            </div>
+
+            <div class="space-y-2">
+                <label for="youtube" class="text-sm font-bold text-slate-700 ml-1">{{ __('YouTube Channel') }}</label>
+                <input id="youtube" name="youtube" type="url" 
+                       class="block w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none" 
+                       value="{{ old('youtube', $user->youtube) }}" placeholder="https://youtube.com/c/yourchannel" />
+            </div>
+        </div>
+
         <div class="flex items-center gap-6 pt-4 border-t border-slate-50">
             <button type="submit" class="bg-indigo-600 text-white px-10 py-3.5 rounded-2xl font-bold text-sm hover:bg-indigo-700 hover:shadow-xl hover:shadow-indigo-200 transition-all active:scale-95">
                 {{ __('Save Changes') }}
