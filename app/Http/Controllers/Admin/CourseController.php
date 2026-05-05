@@ -8,10 +8,17 @@ use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $courses = Course::with(['instructor', 'category'])->latest()->paginate(20);
-        return view('admin.courses.index', compact('courses'));
+        $courses = Course::with(['instructor', 'category'])
+            ->filter($request->only(['search', 'category', 'status']))
+            ->latest()
+            ->paginate(20)
+            ->withQueryString();
+            
+        $categories = \App\Models\Category::all();
+        
+        return view('admin.courses.index', compact('courses', 'categories'));
     }
 
     public function toggleStatus(Course $course)

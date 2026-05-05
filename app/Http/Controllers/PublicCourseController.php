@@ -10,39 +10,16 @@ class PublicCourseController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Course::with(['category', 'instructor', 'reviews'])
+        $courses = Course::with(['category', 'instructor', 'reviews'])
             ->withAvg('reviews', 'rating')
-            ->where('status', 'published');
+            ->where('status', 'published')
+            ->filter($request->only(['search', 'category', 'price', 'rating', 'level', 'sort']))
+            ->paginate(12)
+            ->withQueryString();
 
-        // Search Keyword
-        if ($request->filled('search')) {
-            $query->where(function($q) use ($request) {
-                $q->where('title', 'like', '%' . $request->search . '%')
-                  ->orWhere('description', 'like', '%' . $request->search . '%');
-            });
-        }
-
-        // Category Filter
-        if ($request->filled('category')) {
-            $query->where('category_id', $request->category);
-        }
-
-        // Price Filter
-        if ($request->filled('price')) {
-            if ($request->price == 'free') {
-                $query->where('price', 0);
-            } elseif ($request->price == 'paid') {
-                $query->where('price', '>', 0);
-            }
-        }
-
-        // Rating Filter
-        if ($request->filled('rating')) {
-            $query->having('reviews_avg_rating', '>=', $request->rating);
-        }
-
-        $courses = $query->latest()->get();
-        $categories = Category::all();
+        $categories = Category::withCount(['courses' => function($query) {
+            $query->where('status', 'published');
+        }])->get();
         
         return view('courses.index', compact('courses', 'categories'));
     }

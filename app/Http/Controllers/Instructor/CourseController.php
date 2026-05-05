@@ -11,10 +11,16 @@ use Illuminate\Support\Str;
 
 class CourseController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $courses = auth()->user()->courses()->latest()->get();
-        return view('instructor.courses.index', compact('courses'));
+        $courses = auth()->user()->courses()
+            ->filter($request->only(['search', 'category', 'status']))
+            ->latest()
+            ->paginate(12)
+            ->withQueryString();
+            
+        $categories = Category::all();
+        return view('instructor.courses.index', compact('courses', 'categories'));
     }
 
     public function curriculum(Course $course)

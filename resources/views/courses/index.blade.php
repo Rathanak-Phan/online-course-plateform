@@ -32,12 +32,12 @@
                     <h4 class="font-bold text-slate-900 mb-4">Categories</h4>
                     <div class="space-y-3">
                         <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="radio" name="category" value="" {{ !request('category') ? 'checked' : '' }} class="border-slate-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+                            <input type="radio" name="category" value="" onchange="this.form.submit()" {{ !request('category') ? 'checked' : '' }} class="border-slate-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4">
                             <span class="text-sm text-slate-600 group-hover:text-indigo-600 transition-colors">All Categories</span>
                         </label>
                         @foreach($categories as $category)
                             <label class="flex items-center gap-3 cursor-pointer group">
-                                <input type="radio" name="category" value="{{ $category->id }}" {{ request('category') == $category->id ? 'checked' : '' }} class="border-slate-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+                                <input type="radio" name="category" value="{{ $category->id }}" onchange="this.form.submit()" {{ request('category') == $category->id ? 'checked' : '' }} class="border-slate-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4">
                                 <span class="text-sm text-slate-600 group-hover:text-indigo-600 transition-colors">{{ $category->name }}</span>
                             </label>
                         @endforeach
@@ -49,15 +49,15 @@
                     <h4 class="font-bold text-slate-900 mb-4">Price</h4>
                     <div class="space-y-3">
                         <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="radio" name="price" value="" {{ !request('price') ? 'checked' : '' }} class="border-slate-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+                            <input type="radio" name="price" value="" onchange="this.form.submit()" {{ !request('price') ? 'checked' : '' }} class="border-slate-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4">
                             <span class="text-sm text-slate-600">All</span>
                         </label>
                         <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="radio" name="price" value="free" {{ request('price') == 'free' ? 'checked' : '' }} class="border-slate-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+                            <input type="radio" name="price" value="free" onchange="this.form.submit()" {{ request('price') == 'free' ? 'checked' : '' }} class="border-slate-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4">
                             <span class="text-sm text-slate-600">Free</span>
                         </label>
                         <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="radio" name="price" value="paid" {{ request('price') == 'paid' ? 'checked' : '' }} class="border-slate-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+                            <input type="radio" name="price" value="paid" onchange="this.form.submit()" {{ request('price') == 'paid' ? 'checked' : '' }} class="border-slate-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4">
                             <span class="text-sm text-slate-600">Paid</span>
                         </label>
                     </div>
@@ -68,12 +68,12 @@
                     <h4 class="font-bold text-slate-900 mb-4">Ratings</h4>
                     <div class="space-y-3">
                         <label class="flex items-center gap-3 cursor-pointer group">
-                            <input type="radio" name="rating" value="" {{ !request('rating') ? 'checked' : '' }} class="border-slate-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+                            <input type="radio" name="rating" value="" onchange="this.form.submit()" {{ !request('rating') ? 'checked' : '' }} class="border-slate-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4">
                             <span class="text-sm text-slate-600">Any Rating</span>
                         </label>
                         @for($r = 4; $r >= 1; $r--)
                             <label class="flex items-center gap-3 cursor-pointer group">
-                                <input type="radio" name="rating" value="{{ $r }}" {{ request('rating') == $r ? 'checked' : '' }} class="border-slate-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+                                <input type="radio" name="rating" value="{{ $r }}" onchange="this.form.submit()" {{ request('rating') == $r ? 'checked' : '' }} class="border-slate-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4">
                                 <div class="flex items-center gap-1">
                                     <div class="flex text-amber-400">
                                         @for($j = 1; $j <= 5; $j++)
@@ -96,15 +96,17 @@
             <!-- Main Listing -->
             <div class="flex-1">
                 <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
-                    <p class="text-sm font-medium text-slate-500">Showing <span class="text-slate-900">12</span> of <span class="text-slate-900">1.2k</span> results</p>
+                    <p class="text-sm font-medium text-slate-500">
+                        Showing <span class="text-slate-900">{{ $courses->firstItem() ?? 0 }}</span> to <span class="text-slate-900">{{ $courses->lastItem() ?? 0 }}</span> of <span class="text-slate-900">{{ $courses->total() }}</span> results
+                    </p>
                     <div class="flex items-center gap-2">
                         <span class="text-sm font-medium text-slate-500">Sort by:</span>
-                        <select class="text-sm font-bold border-none bg-transparent focus:ring-0 text-slate-900 cursor-pointer">
-                            <option>Most Popular</option>
-                            <option>Highest Rated</option>
-                            <option>Newest</option>
-                            <option>Price: Low to High</option>
-                            <option>Price: High to Low</option>
+                        <select name="sort" onchange="this.form.submit()" class="text-sm font-bold border-none bg-transparent focus:ring-0 text-slate-900 cursor-pointer">
+                            <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }}>Most Popular</option>
+                            <option value="rating" {{ request('sort') == 'rating' ? 'selected' : '' }}>Highest Rated</option>
+                            <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Newest</option>
+                            <option value="price_low" {{ request('sort') == 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
+                            <option value="price_high" {{ request('sort') == 'price_high' ? 'selected' : '' }}>Price: High to Low</option>
                         </select>
                     </div>
                 </div>
@@ -115,26 +117,26 @@
                             :title="$course->title" 
                             :instructor="$course->instructor->name" 
                             :price="$course->price" 
-                            :rating="number_format($course->averageRating(), 1)" 
-                            :reviews="$course->reviews->count()" 
+                            :rating="number_format($course->reviews_avg_rating ?? $course->averageRating(), 1)" 
+                            :reviews="$course->reviews_count ?? $course->reviews->count()" 
                             :image="$course->thumbnail ? asset('storage/' . $course->thumbnail) : 'https://placehold.co/400x225?text=' . urlencode($course->title)" 
                             :id="$course->id"
                         />
                     @empty
                         <div class="col-span-full py-24 text-center">
+                            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-slate-100 text-slate-400 mb-6">
+                                <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                            </div>
                             <h3 class="text-xl font-bold text-slate-900 mb-2">No courses found</h3>
                             <p class="text-slate-500">Try adjusting your filters or check back later.</p>
+                            <a href="{{ route('courses.index') }}" class="inline-block mt-6 text-indigo-600 font-bold hover:text-indigo-700">Clear all filters</a>
                         </div>
                     @endforelse
                 </div>
 
                 <!-- Pagination -->
-                <div class="mt-16 flex justify-center gap-2">
-                    <a href="#" class="w-10 h-10 flex items-center justify-center rounded-lg bg-indigo-600 text-white font-bold">1</a>
-                    <a href="#" class="w-10 h-10 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-600 font-bold hover:border-indigo-600 hover:text-indigo-600 transition-all">2</a>
-                    <a href="#" class="w-10 h-10 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-600 font-bold hover:border-indigo-600 hover:text-indigo-600 transition-all">3</a>
-                    <span class="w-10 h-10 flex items-center justify-center text-slate-400">...</span>
-                    <a href="#" class="w-10 h-10 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-600 font-bold hover:border-indigo-600 hover:text-indigo-600 transition-all">10</a>
+                <div class="mt-16">
+                    {{ $courses->links() }}
                 </div>
             </div>
         </div>

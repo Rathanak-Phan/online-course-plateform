@@ -10,10 +10,24 @@
                 <h1 class="text-4xl font-black text-slate-900 tracking-tight">My Courses</h1>
                 <p class="mt-2 text-lg text-slate-500 font-medium">Manage, edit, and track your educational content.</p>
             </div>
-            <a href="{{ route('instructor.courses.create') }}" class="inline-flex items-center gap-2 bg-indigo-600 text-white px-8 py-4 rounded-2xl font-black text-sm hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-200 uppercase tracking-widest">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" /></svg>
-                Create New Course
-            </a>
+            <div class="flex flex-col sm:flex-row items-center gap-4">
+                <form action="{{ route('instructor.courses.index') }}" method="GET" class="flex gap-2 w-full sm:w-auto">
+                    <select name="category" onchange="this.form.submit()" class="pl-4 pr-10 py-4 bg-white border border-slate-200 rounded-2xl text-sm font-bold text-slate-600 outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all appearance-none shadow-sm">
+                        <option value="">All Categories</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                    <div class="relative flex-1 sm:flex-none">
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search my courses..." class="w-full sm:w-64 pl-10 pr-4 py-4 bg-white border border-slate-200 rounded-2xl text-sm focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all shadow-sm">
+                        <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                    </div>
+                </form>
+                <a href="{{ route('instructor.courses.create') }}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-indigo-600 text-white px-8 py-4 rounded-2xl font-black text-sm hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-200 uppercase tracking-widest whitespace-nowrap">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" /></svg>
+                    Create New
+                </a>
+            </div>
         </div>
 
         @if(session('success'))
@@ -100,6 +114,11 @@
                 </div>
             @endforelse
         </div>
+        @if($courses->hasPages())
+            <div class="mt-16 flex justify-center">
+                {{ $courses->links() }}
+            </div>
+        @endif
     </div>
 @endsection
 

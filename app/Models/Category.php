@@ -8,9 +8,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
 {
-    use HasFactory;
+    use HasFactory, \App\Traits\Searchable;
 
     protected $fillable = ['name', 'slug', 'parent_id', 'description', 'icon'];
+
+    protected $searchable = ['name', 'description'];
+
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['search'] ?? null, function ($query, $search) {
+            $query->search($search);
+        });
+
+        return $query;
+    }
 
     public function courses(): HasMany
     {
